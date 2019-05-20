@@ -20,7 +20,6 @@ export class LoaderManager {
     private _addedItems: number = 0;
     private _resolvedItems: number = 0;
     private _awaitForRegistrationMs = 500;
-    private _registrationEnded = false;
     private _resolveIn: string = "../";
 
     /**
@@ -42,6 +41,11 @@ export class LoaderManager {
         }
     }
 
+    /**
+     * Get Configuration for some name
+     * --------------------------------------------------------------------
+     * @param name
+     */
     public static getConfiguration<T>(name: string): T | null {
         if (LoaderManager._instance) {
             if (LoaderManager._instance._resolved.has(name)) {
@@ -51,6 +55,11 @@ export class LoaderManager {
         return null;
     }
 
+    /**
+     * Start resolution of configurations added with specific decorator
+     * --------------------------------------------------------------------
+     * @param dirPath
+     */
     public static resolveConfigurations(dirPath?: string) {
         LoaderManager.createInstance();
         if (LoaderManager._instance) {
@@ -76,34 +85,39 @@ export class LoaderManager {
         this._events = this._publisher.asObservable();
     }
 
+    /**
+     * Will start to resolve all of the items in a queue
+     * --------------------------------------------------------------------
+     */
     public resolve() {
         for (const toResolve of this._resolve) {
-            console.log("Resolving: ", toResolve);
             // Check for name
             const name = toResolve.name;
             // Check if it is a class
-            console.log(typeof toResolve.object.constructor);
             if (typeof toResolve.object.constructor !== "undefined") {
                 // Create instance
                 const instance = new toResolve.object();
-                console.log(instance.getConfiguration.constructor.name === "AsyncFunction");
-                console.log((instance.getConfiguration) instanceof Promise);
                 // If Promise or AsyncFunction
                 if (instance.getConfiguration.constructor.name === "AsyncFunction"
                     || (instance.getConfiguration) instanceof Promise) {
                     // Execute promise and archive results after
                     (instance.getConfiguration() as Promise<any>).then(conf => {
-                        console.log("PROMISE RESOLVED");
                         this._resolved.set(name, conf);
+                        this.wrapResolveAndEmitFinalStatus();
                     }).catch(e => {
-                        // Do not react TODO: Create event to resolve
+                        this._publisher.next({
+                           kind: LoaderServiceEventKind.LOAD_SINGLE,
+                           type: LoaderServiceEventType.ERROR,
+                           message: `Cannot load element for name: ${name}. Error: ${e.message}`,
+                        });
+                        this.wrapResolveAndEmitFinalStatus();
                     });
                 }
                 // If function
                 if (typeof instance.getConfiguration === "function") {
                     this._resolved.set(name, instance.getConfiguration());
+                    this.wrapResolveAndEmitFinalStatus();
                 }
-
             }
 
         }
@@ -137,9 +151,7 @@ export class LoaderManager {
                 // Resolve full pathname
                 const filePath = Path.resolve(dir + '/' + file);
                 // Try dynamic load with catching possible unresolved Promise
-                console.log("LOADING: ", filePath);
                 import(filePath).then(cls => {
-                    console.log("RESOLVING!!!");
                     if (typeof cls !== "undefined") {
                         // Yet don't do anything, TODO Add proper event here
                     }
@@ -154,6 +166,26 @@ export class LoaderManager {
             } catch (e) {
                 // Yet don't do anything, TODO Add proper event here
             }
+        }
+    }
+
+    /**
+     * Will try to emit Final status of loading each time as another item
+     * is processed
+     * --------------------------------------------------------------------
+     */
+    private wrapResolveAndEmitFinalStatus() {
+        // Iterate resolved items
+        this._resolvedItems++;
+        // Check if resolved is same as added items and then emit
+        if (this._addedItems <= this._resolvedItems) {
+            this._publisher.next({
+                kind: LoaderServiceEventKind.LOAD_ALL,
+                type: LoaderServiceEventType.SUCCESS,
+                message: "Loader processed all items",
+                itemsTotal: this._resolvedItems,
+                itemNameList: Array.from(this._resolved.keys())
+            })
         }
     }
 

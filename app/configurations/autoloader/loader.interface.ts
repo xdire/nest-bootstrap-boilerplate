@@ -1,8 +1,8 @@
-export interface IStaticBootstrapServiceConfiguration<T> {
-    new(...args: any): IBootstrapServiceConfiguration<T>;
+export interface IStaticBootstrapConfiguration<T> {
+    new(...args: any): IBootstrapConfiguration<T>;
 }
 
-export interface IBootstrapServiceConfiguration<T> {
+export interface IBootstrapConfiguration<T> {
     getConfiguration(): Promise<IBootstrapOptions<T>> | IBootstrapOptions<T>;
 }
 
@@ -16,14 +16,15 @@ export interface IKeyValueOptions {
 
 export interface IConfigurationToResolve {
    name: string;
-   object: IStaticBootstrapServiceConfiguration<any>;
+   object: IStaticBootstrapConfiguration<any>;
 }
 
 export interface ILoaderServiceEventMessage {
     kind: LoaderServiceEventKind,
     type: LoaderServiceEventType,
-    configurations?: number,
-    message: string
+    message: string,
+    itemsTotal?: number,
+    itemNameList?: string[],
 }
 
 export enum LoaderServiceEventType {
