@@ -12,12 +12,12 @@
     "target": "es2017",
     "sourceMap": true,
     "allowJs": false,
-    "rootDir": "./src",
+    "rootDir": "app",
     "outDir": "dist",
-    "baseUrl": "./src"
+    "baseUrl": "app"
   },
   "include": [
-    "src/**/*"
+    "app/**/*"
   ],
   "exclude": [
     "node_modules",
