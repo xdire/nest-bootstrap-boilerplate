@@ -2,9 +2,9 @@ services:
   default:
     host: "0.0.0.0"
     port: 50051
-    proto_package_name: ""
-    proto_file_root: ""
-    proto_file_path: ""
+    proto_package_name: "service"
+    proto_file_root: "proto"
+    proto_file_path: "root.proto"
 logging:
   default:
     level: "INFO"
