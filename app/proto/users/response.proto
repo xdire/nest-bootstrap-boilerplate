@@ -1,0 +1,11 @@
+syntax = "proto3";
+package service.users;
+
+import public "users/message.proto";
+
+message UserListResponse {
+    int64 total = 1;
+    int64 page = 2;
+    int64 items = 3;
+    repeated User users = 5;
+}

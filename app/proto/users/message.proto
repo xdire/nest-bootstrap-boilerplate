@@ -1,0 +1,21 @@
+syntax = "proto3";
+package service.users;
+
+message User {
+    int64 id = 1;
+    string uid = 2;
+    string login = 3;
+    string email = 4;
+    string firstName = 5;
+    string lastName = 6;
+    string password = 7;
+    repeated Groups memberOf = 10;
+}
+
+message Groups {
+    int64 id = 1;
+    string uid = 2;
+    string name = 3;
+    repeated User members = 10;
+}
+
