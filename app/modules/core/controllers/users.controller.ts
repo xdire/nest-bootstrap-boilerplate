@@ -22,4 +22,32 @@ export class UsersController {
         });
     }
 
+    private createUser() {
+
+    }
+
+    private findById() {
+
+    }
+
+    private findByUId() {
+
+    }
+
+    private findByLogin() {
+
+    }
+
+    private findByEmail() {
+
+    }
+
+    private findByIdList() {
+
+    }
+
+    private findByPageList() {
+        
+    }
+
 }
