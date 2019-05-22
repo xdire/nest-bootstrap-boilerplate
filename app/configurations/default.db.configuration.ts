@@ -14,6 +14,7 @@ export class DefaultDbConfiguration implements IBootstrapConfiguration<TypeOrmMo
         const options = databaseConfig.default as {[key: string]: string|number|object};
         // Return type of TypeOrmModuleOptions
         return {
+            name: "core-database",
             type: (String(options.type) as any),
             host: String(options.host),
             port: Number(options.port),
