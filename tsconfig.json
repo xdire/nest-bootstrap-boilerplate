@@ -5,6 +5,7 @@
     "strict": true,
     "declaration": true,
     "noImplicitAny": true,
+    "strictNullChecks": false,
     "removeComments": true,
     "noLib": false,
     "emitDecoratorMetadata": true,

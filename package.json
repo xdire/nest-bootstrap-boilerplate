@@ -3,17 +3,22 @@
   "description": "Nest boilerplate with predefined useful set of entities. Useful for robust prototyping for different projects",
   "version": "1.0.0",
   "dependencies": {
-    "@nestjs/common": "^6.2.0",
-    "@nestjs/microservices": "^6.2.0",
-    "@nestjs/core": "^6.2.0",
-    "@nestjs/platform-express": "^6.2.0",
-    "grpc": "1.18.0",
     "@grpc/proto-loader": "^0.5.1",
-    "google-protobuf": "3.6.1",
-    "ts-protoc-gen": "0.10.0",
-    "rxjs": "^6.5.2",
+    "@nestjs/common": "^6.2.0",
+    "@nestjs/core": "^6.2.0",
+    "@nestjs/microservices": "^6.2.0",
+    "@nestjs/platform-express": "^6.2.0",
+    "@nestjs/typeorm": "^6.1.1",
     "config": "^3.1.0",
-    "reflect-metadata": "^0.1.13"
+    "google-protobuf": "3.6.1",
+    "grpc": "1.18.0",
+    "pg": "^7.11.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.5.2",
+    "uuid": "^3.3.2",
+    "ts-protoc-gen": "0.10.0",
+    "typeorm": "^0.2.17",
+    "tsconfig-paths": "^3.5.0"
   },
   "devDependencies": {
     "@types/node": "^12.0.2",
@@ -31,6 +36,9 @@
     "build:prod": "tsc",
     "start:prod": "NODE_PATH=$PWD/dist node dist/main.js",
     "pack:prod": "npm prune --production",
-    "test-unit": "NODE_PATH=$PWD/app mocha -r ts-node/register 'tests/unit/**/*.ts'"
+    "test-unit": "NODE_PATH=$PWD/app mocha -r ts-node/register 'tests/unit/**/*.ts'",
+    "typeorm": "NODE_PATH=$PWD/app ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config app/configurations/default.migration.configuration.ts",
+    "typeorm:migrate": "npm run typeorm migration:generate -- -n",
+    "typeorm:run": "npm run typeorm migration:run"
   }
 }
