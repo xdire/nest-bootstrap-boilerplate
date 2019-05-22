@@ -21,6 +21,7 @@ export class LoaderManager {
     private _resolvedItems: number = 0;
     private _awaitForRegistrationMs = 500;
     private _resolveIn: string = "../";
+    private _allResolved: boolean = false;
 
     /**
      * Provide class/object with configuration function resolving a particular
@@ -35,6 +36,7 @@ export class LoaderManager {
             instance._resolve.push(configuration);
             instance._addedItems++;
             console.log("Added: ", configuration);
+            instance._allResolved = false;
             setTimeout(() => {
                 instance.resolve();
             }, instance._awaitForRegistrationMs);
@@ -53,6 +55,35 @@ export class LoaderManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Get Configuration for some name
+     * --------------------------------------------------------------------
+     * @param name
+     */
+    public static async getConfigurationAsync<T>(name: string): Promise<T | null> {
+        return new Promise<T|null>((resolve, reject) => {
+            let tryouts = 0;
+            let maxTryouts = 20;
+            const iv = setInterval(() => {
+                if (LoaderManager._instance) {
+
+                    tryouts++;
+                    if (tryouts > maxTryouts) {
+                        reject("Timed out dependency resolution");
+                        clearInterval(iv);
+                    }
+                    if (!LoaderManager._instance._allResolved)
+                        return;
+                    if (LoaderManager._instance._resolved.has(name)) {
+                        clearInterval(iv);
+                        resolve(LoaderManager._instance._resolved.get(name));
+                    }
+                }
+            }, 500);
+        });
+
     }
 
     /**
@@ -185,7 +216,8 @@ export class LoaderManager {
                 message: "Loader processed all items",
                 itemsTotal: this._resolvedItems,
                 itemNameList: Array.from(this._resolved.keys())
-            })
+            });
+            this._allResolved = true;
         }
     }
 
