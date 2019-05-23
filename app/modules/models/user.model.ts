@@ -12,15 +12,15 @@ export class User {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Index()
+    @Index({unique:true})
     @Column({ length: 64})
     public uid: string = "";
 
-    @Index()
+    @Index({unique:true})
     @Column({ length: 64 })
     public login: string = "";
 
-    @Index()
+    @Index({unique:true})
     @Column({ length: 128 })
     public email: string = "";
 
