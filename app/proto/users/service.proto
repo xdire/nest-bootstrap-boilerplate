@@ -6,6 +6,8 @@ import public "users/request.proto";
 import public "users/response.proto";
 
 service UserService {
+    rpc Create(User) returns (User);
+    rpc Update(User) returns (User);
     rpc Find(UserRequest) returns (User);
     rpc FindMany(UserListRequest) returns (UserListResponse);
 }
