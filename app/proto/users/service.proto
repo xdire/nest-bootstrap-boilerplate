@@ -1,0 +1,13 @@
+syntax = "proto3";
+package service.users;
+
+import public "users/message.proto";
+import public "users/request.proto";
+import public "users/response.proto";
+
+service UserService {
+    rpc Create(User) returns (User);
+    rpc Update(User) returns (User);
+    rpc Find(UserRequest) returns (User);
+    rpc FindMany(UserListRequest) returns (UserListResponse);
+}

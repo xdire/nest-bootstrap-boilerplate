@@ -1,0 +1,51 @@
+syntax = "proto3";
+package service.users;
+
+message UserRequest {
+    oneof request {
+        FindByIdRequest findById = 1;
+        FindByUIDRequest findByUID = 2;
+        FindByLoginRequest findByLogin = 3;
+        FindByEmailRequest findByEmail = 4;
+    }
+}
+
+message UserListRequest {
+    oneof request {
+        FindByIdListRequest idList = 1;
+        FindByPage pageList = 2;
+    }
+}
+
+/*
+*    Single User request messages
+*    ------------------------------
+*/
+message FindByIdRequest {
+    int64 id = 1;
+}
+
+message FindByUIDRequest {
+    string uid = 1;
+}
+
+message FindByLoginRequest {
+    string login = 1;
+}
+
+message FindByEmailRequest {
+    string email = 1;
+}
+
+/*
+*    User list request messages
+*    ------------------------------
+*/
+message FindByIdListRequest {
+    repeated int64 idList = 1;
+}
+
+message FindByPage {
+    int64 page = 1;
+    int64 items = 2;
+}
